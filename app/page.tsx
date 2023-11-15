@@ -55,6 +55,18 @@ export default function Home() {
       // Get the user's ID token
       const idToken = await user.getIdToken();
       console.log("User signed in. ID Token:", idToken);
+
+      const res = await fetch("http://localhost:3340/auth/firebase/sign-in", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          idToken: idToken,
+        }),
+      });
+
+      console.log("res", res);
     } catch (error) {
       setError("Error signing in. Please try again later.");
     }
