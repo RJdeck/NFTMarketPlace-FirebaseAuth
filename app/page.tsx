@@ -4,8 +4,9 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  AuthErrorCodes,
 } from "firebase/auth";
+import axios from "axios";
+
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -23,7 +24,8 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+initializeApp(firebaseConfig);
+const baseUrl = process.env.BASE_URL || "http://localhost:3340";
 export default function Home() {
   const auth = getAuth();
   const [email, setEmail] = useState("");
@@ -56,14 +58,10 @@ export default function Home() {
       const idToken = await user.getIdToken();
       console.log("User signed in. ID Token:", idToken);
 
-      const res = await fetch("http://localhost:3340/auth/firebase/sign-in", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          idToken: idToken,
-        }),
+      const serverApi = `${baseUrl}/auth/firebase/sign-in`;
+
+      const res = await axios.post(serverApi, {
+        idToken: idToken,
       });
 
       console.log("res", res);
